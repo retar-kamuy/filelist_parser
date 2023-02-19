@@ -46,11 +46,17 @@ def p_error(p):
 
 yacc.yacc()
 
+# def main():
+#     while True:
+#         try:
+#             # data = input("[DiceBot]> ")
+#             data = '$OS'
+#         except EOFError:
+#             break
+#         result = yacc.parse(data)
+#         print("  [%s] -> " % data + str(result))
+
 def main():
-    while True:
-        try:
-            data = input("[DiceBot]> ")
-        except EOFError:
-            break
-        result = yacc.parse(data)
-        print("  [%s] -> " % data + str(result))
+    data = '$OS'
+    result = yacc.parse(data)
+    print("  [%s] -> " % data + str(result))
