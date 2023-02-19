@@ -1,46 +1,46 @@
 import ply.lex as lex
 
 reserved = {
-   'I'      : 'I',
-   'incdir' : 'INCDIR',
-   'define' : 'DEFINE',
-   'f'      : 'F',
-   'F'      : 'F_REL',
-   'D'      : 'D',
-   'top'    : 'TOP',
-   'top-module' : 'TOP_MODULE',
-   'y'      : 'Y',
+    'I'         : 'I',
+    'incdir'    : 'INCDIR',
+    'define'    : 'DEFINE',
+    'f'         : 'F',
+    'F'         : 'F_REL',
+    'D'         : 'D',
+    'top'       : 'TOP',
+    'top-module': 'TOP_MODULE',
+    'y'         : 'Y',
 }
 
 tokens = [
-    'STRING',
+    'IDENTIFIER',
     'PLUS',
     'SHORT',
     'LONG',
-    'EQUALS',
+    'EQUAL',
     'LPAREN',
     'RPAREN',
-    'LBRACKETS',
-    'RBRACKETS',
+    'LCURLY',
+    'RCURLY',
     'DOLLER',
 ] + list(reserved.values())
 
 t_PLUS = r'\+'
 t_SHORT = r'-'
 t_LONG = r'--'
-t_EQUALS = r'='
+t_EQUAL = r'='
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
-t_LBRACKETS = r'\{'
-t_RBRACKETS = r'\}'
+t_LCURLY = r'\{'
+t_RCURLY = r'\}'
 t_DOLLER = r'\$'
 
 t_ignore = ' \t'
 t_ignore_COMMENT = r'\#.*'
 
-def t_STRING(t):
+def t_IDENTIFIER(t):
     r'[^-+=(){}$\s\t]+'
-    t.type = reserved.get(t.value,'STRING')
+    t.type = reserved.get(t.value, 'IDENTIFIER')
     return t
 
 def t_newline(t):
