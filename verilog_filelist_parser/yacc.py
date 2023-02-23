@@ -21,13 +21,6 @@ def p_arguments(p):
         for v in p[2:]:
             p[0] = [p[1]] + v
 
-# def p_statement_incdir(p):
-#     """statement : PLUS INCDIR PLUS expression"""
-#     p[0] = {
-#         'tag': 'argumentType',
-#         'text': p[4],
-#     }
-
 def p_argument_positional(p):
     """argument : factor"""
     if len(p) != 2:
@@ -39,33 +32,18 @@ def p_argument_positional(p):
         }
 
 def p_argument_optional(p):
-    """argument : SHORT_I
+    """argument : SHORT_I factor
                 | SHORT_Y factor
                 | PLUS_INCDIR plus_factor"""
-    if len(p) == 2:
+    if p[1] == '+incdir':
         p[0] = {
             'tag': 'kIncludeArgument',
             'children': [
                 {
                     'tag': 'keyword',
-                    'text': p[1][:2],
-                },
-                {
-                    'tag': 'identifier',
-                    'text': p[1][2:],
-                }
-            ]
-        }
-    elif p[1] == '-y':
-        print(p[1])
-        p[0] = {
-            'tag': 'kIncludeArgument',
-            'children': [
-                {
-                    'tag': 'kArgumentType',
                     'text': p[1],
                 },
-                p[2],
+                *p[2],
             ]
         }
     else:
@@ -73,16 +51,16 @@ def p_argument_optional(p):
             'tag': 'kIncludeArgument',
             'children': [
                 {
-                    'tag': 'kArgumentType',
+                    'tag': 'keyword',
                     'text': p[1],
                 },
-                *p[2],
+                p[2],
             ]
         }
 
 def p_plus_factor_identifier(p):
-    """plus_factor : PLUS factor plus_factor
-                   | PLUS factor"""
+    """plus_factor : PLUS IDENTIFIER plus_factor
+                   | PLUS IDENTIFIER"""
     if len(p) == 3:
         p[0] = [
             {
@@ -115,11 +93,32 @@ def p_factor_variable(p):
         }
 
 def p_factor_identifier(p):
-    """factor : IDENTIFIER"""
-    p[0] = {
-        'tag': 'identifier',
-        'text': p[1],
-    }
+    """factor : IDENTIFIER
+              | IDENTIFIER PLUS factor"""
+    if len(p) == 2:
+        p[0] = {
+            'tag': 'identifier',
+            'text': p[1],
+        }
+    else:
+        p[0] = {
+            'tag': 'identifier',
+            'text': p[1] + p[2] + p[3]['text'],
+        }
+
+def p_factor_identifier(p):
+    """factor : IDENTIFIER
+              | IDENTIFIER PLUS factor"""
+    if len(p) == 2:
+        p[0] = {
+            'tag': 'identifier',
+            'text': p[1],
+        }
+    else:
+        p[0] = {
+            'tag': 'identifier',
+            'text': p[1] + p[2] + p[3]['text'],
+        }
 
 def p_error(p):
     print("Syntax error in input")
@@ -138,10 +137,11 @@ yacc.yacc()
 
 def main():
 #     data = '''
-# src/test-Itest.sv src/test+test.sv +define+macro1+macro2 -f run.f $(TB)/top_tb.sv ${SRC}/main.sv --top main src/-ysrc -y src +incdir+tb1 +incdir+tb2 -Iinc -Ddef
+# +define+macro1+macro2 -f run.f $(TB)/top_tb.sv ${SRC}/main.sv --top main -Ddef
 # '''
-    # data = '$OS -y src/test+test-Itest +incdir+tb1+tb2 +incdir+src1 -Iinclude'
-    data = '$OS -y src/test'
+    data = '''
+$OS src/test-Itest.sv src/test+test.sv -y src/test+test-Itest +incdir+tb1+tb2 +incdir+tb1 +incdir+tb2 +incdir+src1 src/-ysrc -y src -Iinclude -Iinc
+'''
     result = yacc.parse(data)
     print("  [%s] -> " % data)
     pprint.pprint(result, indent=4)
