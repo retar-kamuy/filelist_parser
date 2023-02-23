@@ -20,8 +20,21 @@ tokens = [
     'LCURLY',
     'RCURLY',
     'DOLLER',
+    'SPACE',
+    'TAB',
 ]
 
+t_SPACE = r'\s'
+t_TAB = r'\t'
+# t_SHORT = r'-'
+t_PLUS = r'\+'
+t_EQUAL = r'='
+t_LPAREN = r'\('
+t_RPAREN = r'\)'
+t_LCURLY = r'\{'
+t_RCURLY = r'\}'
+t_DOLLER = r'\$'
+# t_LONG = r'--'
 t_LONG_TOP = r'--top'
 t_LONG_TOP_MODULE = r'--top-module'
 t_SHORT_F = r'-f'
@@ -31,21 +44,12 @@ t_SHORT_I = r'-I'
 t_SHORT_D = r'-D'
 t_PLUS_INCDIR = r'\+incdir'
 t_PLUS_DEFINE = r'\+define'
-t_PLUS = r'\+'
-# t_SHORT = r'-'
-# t_LONG = r'--'
-t_EQUAL = r'='
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-t_LCURLY = r'\{'
-t_RCURLY = r'\}'
-t_DOLLER = r'\$'
 
 t_ignore = ' \t'
 t_ignore_COMMENT = r'\#.*'
 
 def t_IDENTIFIER(t):
-    r'[^-+$(){}\s\t]+'
+    r'[^-+=$(){}\s\t][^+=$(){}\s\t]*'
     return t
 
 def t_newline(t):
@@ -59,7 +63,7 @@ def t_error(t):
 lexer = lex.lex()
 
 data = '''
-src/test-Itest.sv src/test+test.sv +define+macro1+macro2 -f run.f $(TB)/top_tb.sv ${SRC}/main.sv --top main src/-ysrc -y src +incdir+tb1 +incdir+tb2 -Iinc -Ddef
+src/test-Itest.sv src/test+test.sv +define+macro1+macro2 -f run.f $(TB)/top_tb.sv ${SRC}/main.sv --top main src/-ysrc -y src -y src/test+test-Itest +incdir+tb1 +incdir+tb2 -Iinc -Ddef
 '''
 
 lexer.input(data)
