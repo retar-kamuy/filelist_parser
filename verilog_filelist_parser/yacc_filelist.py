@@ -1,5 +1,5 @@
 import ply.yacc as yacc
-from lex import tokens
+from lex_filelist import tokens
 import os
 import pprint
 
