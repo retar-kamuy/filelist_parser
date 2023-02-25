@@ -81,7 +81,7 @@ class Test_Lex(unittest.TestCase):
 
     def test_optional_long_top(self):
         lex.lex(module=lex_filelist)
-        data = '--top module--top_no_optional --topmodule'
+        data = '--top module--top-no-optional --topmodule'
         result = lex.runmain(data=data)
         result = sys.stdout.getvalue()
         expects = data.split(' ')
