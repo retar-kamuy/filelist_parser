@@ -59,18 +59,3 @@ def t_newline(t):
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(t)
-
-lexer = lex.lex()
-
-data = '''
-src/test-Itest.sv src/test+test.sv +define+macro1+macro2 -f run.f $(TB)/top_tb.sv ${SRC}/main.sv --top main src/-ysrc -y src -y src/test+test-Itest +incdir+tb1 +incdir+tb2 -Iinc -Ddef
-'''
-
-lexer.input(data)
-
-if __name__ == '__main__':
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break
-        print(tok)
