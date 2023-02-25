@@ -8,6 +8,7 @@ tokens = [
     'SHORT_D',
     'LONG_TOP',
     'LONG_TOP_MODULE',
+    'VARIABLE',
     'IDENTIFIER',
     'PLUS_INCDIR',
     'PLUS_DEFINE',
@@ -47,6 +48,10 @@ t_LONG_TOP_MODULE = r'--top-module'
 
 t_ignore = ' \t'
 t_ignore_COMMENT = r'\#.*'
+
+def t_VARIABLE(t):
+    r'\$[({]?[a-zA-Z0-9_-]+[})]?'
+    return t
 
 def t_IDENTIFIER(t):
     r'[^-+=$(){}\s\t][^+=$(){}\s\t]*'

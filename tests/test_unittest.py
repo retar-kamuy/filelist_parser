@@ -37,12 +37,30 @@ class Test_Lex(unittest.TestCase):
         sys.stderr = sys.__stderr__
         sys.stdout = sys.__stdout__
 
+    def test_variable(self):
+        lex.lex(module=lex_filelist)
+        data = '$OS path1/$OS $OS/path2 ${OS} path3/${OS}/path4 $(OS)'
+        result = lex.runmain(data=data)
+        result = sys.stdout.getvalue()
+        self.assertTrue(check_expected(result,
+            "(VARIABLE,'$OS',1,0)\n"
+            "(IDENTIFIER,'path1/',1,4)\n"
+            "(VARIABLE,'$OS',1,10)\n"
+            "(VARIABLE,'$OS',1,14)\n"
+            "(IDENTIFIER,'/path2',1,17)\n"
+            "(VARIABLE,'${OS}',1,24)\n"
+            "(IDENTIFIER,'path3/',1,30)\n"
+            "(VARIABLE,'${OS}',1,36)\n"
+            "(IDENTIFIER,'/path4',1,41)\n"
+            "(VARIABLE,'$(OS)',1,48)"
+        ))
+
     def test_positional(self):
         lex.lex(module=lex_filelist)
         data = 'multiple_-y_no_optional multiple_p2 multiple_path3'
 
         #data = '''
-#src/test+test.sv +define+macro1+macro2 $(TB)/top_tb.sv ${SRC}/main.sv -y src/test+test-Itest +incdir+tb1 +incdir+tb2 -Iinc -Ddef
+#src/test+test.sv +define+macro1+macro2 -y src/test+test-Itest +incdir+tb1 +incdir+tb2 -Iinc -Ddef
 #'''
         result = lex.runmain(data=data)
         result = sys.stdout.getvalue()
