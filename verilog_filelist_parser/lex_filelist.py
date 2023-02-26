@@ -11,6 +11,7 @@ reserved = {
 }
 
 tokens = [
+    'SPACES',
     'SHORT_D',
     'SHORT_F',
     'SHORT_UPPER_F',
@@ -26,23 +27,24 @@ tokens = [
 #   'PLUS',
 #   'MINUS',
     'EQUAL',
-    'LPAREN',
-    'RPAREN',
-    'LCURLY',
-    'RCURLY',
-    'DOLLER',
+#   'LPAREN',
+#   'RPAREN',
+#   'LCURLY',
+#   'RCURLY',
+#   'DOLLER',
 ]
 
+t_SPACES = r'[\s\t]+'
 # t_PLUS = r'\+'
 # t_MINUS = r'-'
 t_EQUAL = r'='
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-t_LCURLY = r'\{'
-t_RCURLY = r'\}'
-t_DOLLER = r'\$'
+# t_LPAREN = r'\('
+# t_RPAREN = r'\)'
+# t_LCURLY = r'\{'
+# t_RCURLY = r'\}'
+# t_DOLLER = r'\$'
 
-t_ignore = ' \t'
+# t_ignore = ' \t'
 t_ignore_COMMENT = r'\#.*'
 
 def t_SHORT_D(t):
