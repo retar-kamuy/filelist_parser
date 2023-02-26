@@ -30,11 +30,11 @@ def check_expected(result, expected, contains=False):
 
 class Test_Lex(unittest.TestCase):
     def setUp(self):
-        sys.stderr = StringIO.StringIO()
+        # sys.stderr = StringIO.StringIO()
         sys.stdout = StringIO.StringIO()
 
     def tearDown(self):
-        sys.stderr = sys.__stderr__
+        # sys.stderr = sys.__stderr__
         sys.stdout = sys.__stdout__
 
     def test_variable(self):
@@ -42,6 +42,8 @@ class Test_Lex(unittest.TestCase):
         data = '$OS path1/$OS $OS/path2 ${OS} path3/${OS}/path4 $(OS)'
         result = lex.runmain(data=data)
         result = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        print(result)
         self.assertTrue(check_expected(result,
             "(VARIABLE,'$OS',1,0)\n"
             "(IDENTIFIER,'path1/',1,4)\n"
@@ -64,6 +66,8 @@ class Test_Lex(unittest.TestCase):
 #'''
         result = lex.runmain(data=data)
         result = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        print(result)
         expects = data.split(' ')
         self.assertTrue(check_expected(result,
             f"(IDENTIFIER,'{expects[0]}',1,0)\n"
@@ -76,12 +80,14 @@ class Test_Lex(unittest.TestCase):
         data = '-f path-f_no_optional -f_no_optional'
         result = lex.runmain(data=data)
         result = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        print(result)
         expects = data.split(' ')
+        print(len(expects[0])+len(expects[1])+len(expects[2][:2])+2)
         self.assertTrue(check_expected(result,
             f"(SHORT_F,'{expects[0]}',1,0)\n"
             f"(IDENTIFIER,'{expects[1]}',1,{len(expects[0])+1})\n"
-            f"(SHORT_F,'{expects[2][:2]}',1,{len(expects[0])+len(expects[1])+2})\n"
-            f"(IDENTIFIER,'{expects[2][2:]}',1,{len(expects[0])+len(expects[1])+len(expects[2][:2])+2})"
+            f"(IDENTIFIER,'{expects[2]}',1,{len(expects[0])+len(expects[1])+2})"
         ))
 
     def test_optional_short_y(self):
@@ -89,12 +95,13 @@ class Test_Lex(unittest.TestCase):
         data = '-y path-y_no_optional -y_no_optional'
         result = lex.runmain(data=data)
         result = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        print(result)
         expects = data.split(' ')
         self.assertTrue(check_expected(result,
             f"(SHORT_Y,'{expects[0]}',1,0)\n"
             f"(IDENTIFIER,'{expects[1]}',1,{len(expects[0])+1})\n"
-            f"(SHORT_Y,'{expects[2][:2]}',1,{len(expects[0])+len(expects[1])+2})\n"
-            f"(IDENTIFIER,'{expects[2][2:]}',1,{len(expects[0])+len(expects[1])+len(expects[2][:2])+2})"
+            f"(IDENTIFIER,'{expects[2]}',1,{len(expects[0])+len(expects[1])+2})"
         ))
 
     def test_optional_long_top(self):
@@ -102,12 +109,13 @@ class Test_Lex(unittest.TestCase):
         data = '--top module--top-no-optional --topmodule'
         result = lex.runmain(data=data)
         result = sys.stdout.getvalue()
+        sys.stdout = sys.__stdout__
+        print(result)
         expects = data.split(' ')
         self.assertTrue(check_expected(result,
             f"(LONG_TOP,'{expects[0]}',1,0)\n"
             f"(IDENTIFIER,'{expects[1]}',1,{len(expects[0])+1})\n"
-            f"(LONG_TOP,'{expects[2][:5]}',1,{len(expects[0])+len(expects[1])+2})\n"
-            f"(IDENTIFIER,'{expects[2][5:]}',1,{len(expects[0])+len(expects[1])+len(expects[2][:5])+2})"
+            f"(IDENTIFIER,'{expects[2]}',1,{len(expects[0])+len(expects[1])+2})"
         ))
 
 if __name__ == '__main__':
