@@ -1,12 +1,13 @@
+import os
+import re
+from typing import Any
+
 import ply.yacc as yacc
 from lex_filelist import tokens
-import os
-import pprint
-import re
 
 def p_command(p):
     """command : arguments"""
-    p[0] = p[1]
+    p[0] = {'tag': 'kFilelistDeclaration', 'children': p[1]}
 
 def p_arguments(p):
     """arguments : argument SPACES arguments
@@ -30,13 +31,26 @@ def p_argument_positional(p):
 
 def p_argument_optional(p):
     """argument : SHORT_I factor
-                | SHORT_Y factor"""
-    if p[1] == '+incdir':
+                | SHORT_Y factor
+                | SHORT_F SPACES factor
+                | SHORT_UPPER_F SPACES factor"""
+    if len(p) > 3:
+        p[0] = {
+            'tag': 'kFileArgument',
+            'children': [
+                {
+                    'tag': 'option',
+                    'text': p[1],
+                },
+                p[3],
+            ]
+        }
+    elif p[1] == '+incdir':
         p[0] = {
             'tag': 'kIncludeArgument',
             'children': [
                 {
-                    'tag': 'keyword',
+                    'tag': 'option',
                     'text': p[1],
                 },
                 *p[2],
@@ -47,7 +61,7 @@ def p_argument_optional(p):
             'tag': 'kIncludeArgument',
             'children': [
                 {
-                    'tag': 'keyword',
+                    'tag': 'option',
                     'text': p[1],
                 },
                 p[2],
@@ -120,27 +134,5 @@ def p_error(p):
 
 yacc.yacc()
 
-# def main():
-#     while True:
-#         try:
-#             # data = input("[DiceBot]> ")
-#             data = '$OS'
-#         except EOFError:
-#             break
-#         result = yacc.parse(data)
-#         print("  [%s] -> " % data + str(result))
-
-def main():
-#     data = '''
-# +define+macro1+macro2 -f run.f $(TB)/top_tb.sv ${SRC}/main.sv --top main -Ddef
-# '''
-#     data = '''
-# $OS src/test-Itest.sv src/test+test.sv -y src/test+test-Itest +incdir+tb1+tb2 +incdir+tb1 +incdir+tb2 +incdir+src1 src/-ysrc -y src -Iinclude -Iinc
-# '''
-
-    data = '''
-$(OS) $OS/main.sv src/$OS/main.sv src/${OS} src/tb/main.sv sub.sv
-'''
-    result = yacc.parse(data)
-    print("  [%s] -> " % data)
-    pprint.pprint(result, indent=4)
+def get_result(data: str) -> Any:
+    return yacc.parse(data)

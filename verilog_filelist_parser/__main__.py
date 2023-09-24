@@ -1,3 +1,3 @@
-from yacc_filelist import main
+from cli import main
 
 main()
