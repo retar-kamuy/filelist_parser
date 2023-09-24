@@ -8,3 +8,5 @@ sub.sv
 src-f
 -F src-fileh
 -Isrc
++incdir+src
+-I src/tb

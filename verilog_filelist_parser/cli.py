@@ -19,6 +19,15 @@ class FilelistParser(FilelistSyntax):
                     srcs.append(src_obj.text)
         return srcs
 
+    def get_include_directories(self) -> List[str]:
+        incdirs = []
+        for file_path, file_data in self.data.items():
+            for filelist in file_data.tree.iter_find_all({"tag": "kFilelistDeclaration"}):
+                for incdir_obj in filelist.iter_find_all({"tag": ["kIncludeArgument"]}):
+                    incdir_id = incdir_obj.find({"tag": ["identifier"]})
+                    incdirs.append(incdir_id.text)
+        return incdirs
+
     @property
     def print_tree(self):
         for file_path, file_data in self.data.items():
@@ -33,6 +42,8 @@ def main():
     parser.print_tree
     srcs = parser.get_source_files()
     print(srcs)
+    incdirs = parser.get_include_directories()
+    print(incdirs)
 
     # for file_path, file_data in data.items():
     #     for filelist in file_data.tree.iter_find_all({"tag": "kFilelistDeclaration"}):

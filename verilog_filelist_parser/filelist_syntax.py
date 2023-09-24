@@ -230,7 +230,7 @@ class FilelistSyntax:
     @staticmethod
     def _transform_tree(tree, data: SyntaxData, skip_null: bool) -> RootNode:
         def transform(tree):
-            print(tree)
+            # print(tree)
             if tree is None:
                 return None
             if "children" in tree:
@@ -270,12 +270,7 @@ class FilelistSyntax:
                 f.close()
 
             result = yacc.parse(file_data.source_code.replace('\n', ' '))
-
             file_data.tree = FilelistSyntax._transform_tree(result, file_data, True)
-            for prefix, _, node in anytree.RenderTree(file_data.tree):
-                print(f"\033[90m{prefix}\033[0m{node.to_formatted_string()}")
-            print()
-
             data[pathname] = file_data
 
         return data

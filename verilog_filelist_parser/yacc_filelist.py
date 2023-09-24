@@ -30,69 +30,97 @@ def p_argument_positional(p):
         }
 
 def p_argument_optional(p):
-    """argument : SHORT_I factor
+    """argument : PLUS INCDIR plus_factor
+                | SHORT_I factor
                 | SHORT_Y factor
+                | SHORT_I SPACES factor
                 | SHORT_F SPACES factor
                 | SHORT_UPPER_F SPACES factor"""
-    if len(p) > 3:
-        p[0] = {
-            'tag': 'kFileArgument',
-            'children': [
-                {
-                    'tag': 'option',
-                    'text': p[1],
-                },
-                p[3],
-            ]
-        }
-    elif p[1] == '+incdir':
+    print(p[1])
+    if p[1] == '+':
         p[0] = {
             'tag': 'kIncludeArgument',
             'children': [
                 {
                     'tag': 'option',
-                    'text': p[1],
+                    'text': p[1] + p[2],
                 },
-                *p[2],
+                *p[3],
             ]
         }
+    elif len(p) > 3:
+        if p[1] == '-F' or p[1] == '-f':
+            p[0] = {
+                'tag': 'kFileArgument',
+                'children': [
+                    {
+                        'tag': 'option',
+                        'text': p[1],
+                    },
+                    p[3],
+                ]
+            }
+        else:
+            p[0] = {
+                'tag': 'kIncludeArgument',
+                'children': [
+                    {
+                        'tag': 'option',
+                        'text': p[1],
+                    },
+                    p[3],
+                ]
+            }
     else:
-        p[0] = {
-            'tag': 'kIncludeArgument',
-            'children': [
-                {
-                    'tag': 'option',
-                    'text': p[1],
-                },
-                p[2],
-            ]
-        }
+        if p[1] == '-F' or p[1] == '-f':
+            p[0] = {
+                'tag': 'kFileArgument',
+                'children': [
+                    {
+                        'tag': 'option',
+                        'text': p[1],
+                    },
+                    p[2],
+                ]
+            }
+        else:
+            p[0] = {
+                'tag': 'kIncludeArgument',
+                'children': [
+                    {
+                        'tag': 'option',
+                        'text': p[1],
+                    },
+                    p[2],
+                ]
+            }
 
-# def p_plus_factor_identifier(p):
-#     """plus_factor : PLUS IDENTIFIER plus_factor
-#                    | PLUS IDENTIFIER"""
-#     if len(p) == 3:
-#         p[0] = [
-#             {
-#                 'tag': 'identifier',
-#                 'text': p[2],
-#             }
-#         ]
-#     else:
-#         p[0] = [
-#             {
-#                 'tag': 'identifier',
-#                 'text': p[2],
-#             },
-#             *p[3],
-#         ]
+def p_plus_factor_identifier(p):
+    """plus_factor : PLUS IDENTIFIER plus_factor
+                   | PLUS IDENTIFIER"""
+    # print(p[1])
+    if len(p) == 3:
+        p[0] = [
+            {
+                'tag': 'identifier',
+                'text': p[2],
+            }
+        ]
+    else:
+        p[0] = [
+            {
+                'tag': 'identifier',
+                'text': p[2],
+            },
+            *p[3],
+        ]
 
 def p_factor_identifier(p):
     """factor : variable factor
               | IDENTIFIER factor
               | variable
               | IDENTIFIER"""
-    print(p[1])
+    # print(p[1])
     if len(p) == 2:
         if 'tag' in p[1]:
             p[0] = {
