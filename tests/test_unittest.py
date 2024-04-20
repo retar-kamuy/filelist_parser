@@ -2,9 +2,9 @@ import os
 import sys
 import io as StringIO
 import ply.lex as lex
-sys.path.append(os.path.join(os.path.dirname(__file__), '../verilog_filelist_parser'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../filelist_parser'))
 
-from verilog_filelist_parser import lex_filelist
+from filelist_parser import lex_filelist
 import unittest
 
 def check_expected(result, expected, contains=False):

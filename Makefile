@@ -1,30 +1,34 @@
+###############################################################################
+# Settings
+###############################################################################
+MODULE = filelist_parser
+
 VENV_HOME = .venv
+
 ifeq ($(OS),Windows_NT)
+	PY3 = python
 	PYTHON = $(VENV_HOME)\Scripts\python
 	PIP = $(VENV_HOME)\Scripts\pip
 	RM = rd /s /q
 else
+	PY3 = python3
 	PYTHON = $(VENV_HOME)/bin/python
 	PIP = $(VENV_HOME)/bin/pip
 	RM = rm -rf
 endif
 
-# PYTHON = $(VENV_HOME)/Scripts/python
-# PIP = $(VENV_HOME)/Scripts/pip
 
-MODULE = verilog_filelist_parser
-
+###############################################################################
+# Commands
+###############################################################################
 install: $(VENV_HOME)
 
+freeze: requirements.txt
+
 $(VENV_HOME): requirements.txt
-ifeq ($(OS),Windows_NT)
-	python -m venv $@
-else
-	python3 -m venv $@
-endif
+	$(PY3) -m venv $@
 	$(PIP) install -r requirements.txt
 
-freeze: requirements.txt
 requirements.txt:
 	$(PIP) freeze > $@
 

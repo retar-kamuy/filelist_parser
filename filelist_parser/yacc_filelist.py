@@ -3,7 +3,7 @@ import re
 from typing import Any
 
 import ply.yacc as yacc
-from lex_filelist import tokens
+from lex_filelist import tokens    # pylint: disable=W0611
 
 def p_command(p):
     """command : arguments"""
@@ -40,83 +40,37 @@ def p_argument_optional(p):
     # print(p[1])
     if p[1] == '+':
         p[0] = {
-            'tag': 'kIncludeArgument',
+            'tag': 'kOptionalArgument',
             'children': [
                 {
-                    'tag': 'option',
+                    'tag': 'argument',
                     'text': p[1] + p[2],
                 },
                 *p[3],
             ]
         }
     elif len(p) > 3:
-        if p[1] == '-F' or p[1] == '-f':
-            p[0] = {
-                'tag': 'kFileArgument',
-                'children': [
-                    {
-                        'tag': 'option',
-                        'text': p[1],
-                    },
-                    p[3],
-                ]
-            }
-        elif p[1] == '-y':
-            p[0] = {
-                'tag': 'kSearchDirectoryArgument',
-                'children': [
-                    {
-                        'tag': 'option',
-                        'text': p[1],
-                    },
-                    p[3],
-                ]
-            }
-        else:
-            p[0] = {
-                'tag': 'kIncludeArgument',
-                'children': [
-                    {
-                        'tag': 'option',
-                        'text': p[1],
-                    },
-                    p[3],
-                ]
-            }
+        p[0] = {
+            'tag': 'kOptionalArgument',
+            'children': [
+                {
+                    'tag': 'argument',
+                    'text': p[1],
+                },
+                p[3],
+            ]
+        }
     else:
-        if p[1] == '-F' or p[1] == '-f':
-            p[0] = {
-                'tag': 'kFileArgument',
-                'children': [
-                    {
-                        'tag': 'option',
-                        'text': p[1],
-                    },
-                    p[2],
-                ]
-            }
-        elif p[1] == '-y':
-            p[0] = {
-                'tag': 'kSearchDirectoryArgument',
-                'children': [
-                    {
-                        'tag': 'option',
-                        'text': p[1],
-                    },
-                    p[2],
-                ]
-            }
-        else:
-            p[0] = {
-                'tag': 'kIncludeArgument',
-                'children': [
-                    {
-                        'tag': 'option',
-                        'text': p[1],
-                    },
-                    p[2],
-                ]
-            }
+        p[0] = {
+            'tag': 'kOptionalArgument',
+            'children': [
+                {
+                    'tag': 'argument',
+                    'text': p[1],
+                },
+                p[2],
+            ]
+        }
 
 def p_plus_factor_identifier(p):
     """plus_factor : PLUS IDENTIFIER plus_factor

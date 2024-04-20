@@ -10,26 +10,29 @@ class FilelistParser(FilelistSyntax):
         self.paths = paths
         self.data = self.parse_files(paths)
 
-    def get_optional_arguments(self, tags: List[str]) -> List[str]:
+    def get_optional_arguments(self, filters: List[str] | None) -> List[str]:
         identifiers = []
-        for file_path, file_data in self.data.items():
+        for file_path, file_data in self.data.items():  # pylint: disable=W0612
             for filelist in file_data.tree.iter_find_all({'tag': 'kFilelistDeclaration'}):
-                for identifier_obj in filelist.iter_find_all({'tag': tags}):
-                    identifier_id = identifier_obj.find({'tag': ['identifier']})
-                    identifiers.append(identifier_id.text)
+                for obj in filelist.iter_find_all({'tag': ['kOptionalArgument']}):
+                    argument = obj.find({'tag': ['argument']})
+                    for filter_arg in filters:
+                        if argument.text == filter_arg:
+                            identifier = obj.find({'tag': ['identifier']})
+                            identifiers.append(identifier.text)
         return identifiers
 
     def get_positional_arguments(self) -> List[str]:
         identifiers = []
-        for file_path, file_data in self.data.items():
+        for file_path, file_data in self.data.items():  # pylint: disable=W0612
             for filelist in file_data.tree.iter_find_all({"tag": "kFilelistDeclaration"}):
-                for identifier_obj in filelist.iter_find_all({"tag": ["kPositionalArgument"]}):
-                    identifiers.append(identifier_obj.text)
+                for obj in filelist.iter_find_all({"tag": ["kPositionalArgument"]}):
+                    identifiers.append(obj.text)
         return identifiers
 
     @property
     def print_tree(self):
-        for file_path, file_data in self.data.items():
+        for file_path, file_data in self.data.items():  # pylint: disable=W0612
             for prefix, _, node in anytree.RenderTree(file_data.tree):
                 print(f"\033[90m{prefix}\033[0m{node.to_formatted_string()}")
             print()
@@ -41,7 +44,7 @@ def main():
     parser.print_tree
     srcs = parser.get_positional_arguments()
     print(srcs)
-    incdirs = parser.get_optional_arguments(['kIncludeArgument'])
+    incdirs = parser.get_optional_arguments(['+incdir'])
     print(incdirs)
-    filelists = parser.get_optional_arguments(['kFileArgument'])
+    filelists = parser.get_optional_arguments(['-f'])
     print(filelists)

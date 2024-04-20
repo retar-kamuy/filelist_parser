@@ -77,16 +77,3 @@ def t_error(t):
     t.lexer.skip(t)
 
 lexer = lex.lex()
-
-data =  '''
-	 src\src $(SRC).sv $SRC/file.sv src/src -filelist -f filelist.f src-f -F src-file -Iinclude -I include include-I +incdir+path1+path2 path+incdir -Ddefine+define -Ddefine=value +define+define1=value+define2
-'''
-
-lexer.input(data)
-
-if __name__ == '__main__':
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break
-        print(tok)
