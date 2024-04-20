@@ -1,14 +1,14 @@
 """Wrapper for ``filelist-syntax --export_json``"""
 import collections
 import re
-from typing import Any, Callable, Dict, Iterable, List, Optional, Union
+from typing import Callable, Dict, Iterable, List, Optional, Union
 
 import dataclasses
 import anytree
 
 import ply.yacc as yacc
 
-import yacc_filelist
+import yacc_filelist    # pylint: disable=W0611
 
 _CSI_SEQUENCE = re.compile("\033\\[.*?m")
 
@@ -157,7 +157,7 @@ class BranchNode(Node):
                     max_count: int = 0, iter_: TreeIterator = LevelOrderTreeIterator,
                     **kwargs) -> List[Node]:
 
-      return list(self.iter_find_all(filter_, max_count=max_count, iter_=iter_,
+        return list(self.iter_find_all(filter_, max_count=max_count, iter_=iter_,
                     **kwargs))
 
     def to_formatted_string(self) -> str:

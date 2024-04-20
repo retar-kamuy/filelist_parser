@@ -41,7 +41,9 @@ class FilelistParser(FilelistSyntax):
 def main():
     parser = FilelistParser(['filelist.f'])
 
-    parser.print_tree
+    tree = parser.print_tree
+    print(tree)
+
     srcs = parser.get_positional_arguments()
     print(srcs)
     incdirs = parser.get_optional_arguments(['+incdir'])
