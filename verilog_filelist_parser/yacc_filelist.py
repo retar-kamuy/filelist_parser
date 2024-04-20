@@ -22,7 +22,8 @@ def p_arguments(p):
 def p_argument_positional(p):
     """argument : factor"""
     if len(p) != 2:
-        print(p[1])
+        # print(p[1])
+        None
     else:
         p[0] = {
             'tag': 'kPositionalArgument',
@@ -32,11 +33,11 @@ def p_argument_positional(p):
 def p_argument_optional(p):
     """argument : PLUS INCDIR plus_factor
                 | SHORT_I factor
-                | SHORT_Y factor
                 | SHORT_I SPACES factor
                 | SHORT_F SPACES factor
+                | SHORT_Y SPACES factor
                 | SHORT_UPPER_F SPACES factor"""
-    print(p[1])
+    # print(p[1])
     if p[1] == '+':
         p[0] = {
             'tag': 'kIncludeArgument',
@@ -60,6 +61,17 @@ def p_argument_optional(p):
                     p[3],
                 ]
             }
+        elif p[1] == '-y':
+            p[0] = {
+                'tag': 'kSearchDirectoryArgument',
+                'children': [
+                    {
+                        'tag': 'option',
+                        'text': p[1],
+                    },
+                    p[3],
+                ]
+            }
         else:
             p[0] = {
                 'tag': 'kIncludeArgument',
@@ -75,6 +87,17 @@ def p_argument_optional(p):
         if p[1] == '-F' or p[1] == '-f':
             p[0] = {
                 'tag': 'kFileArgument',
+                'children': [
+                    {
+                        'tag': 'option',
+                        'text': p[1],
+                    },
+                    p[2],
+                ]
+            }
+        elif p[1] == '-y':
+            p[0] = {
+                'tag': 'kSearchDirectoryArgument',
                 'children': [
                     {
                         'tag': 'option',

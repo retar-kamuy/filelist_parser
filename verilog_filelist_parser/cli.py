@@ -1,4 +1,3 @@
-import os
 from typing import List
 
 import anytree
@@ -11,22 +10,22 @@ class FilelistParser(FilelistSyntax):
         self.paths = paths
         self.data = self.parse_files(paths)
 
-    def get_source_files(self) -> List[str]:
-        srcs = []
+    def get_optional_arguments(self, tags: List[str]) -> List[str]:
+        identifiers = []
         for file_path, file_data in self.data.items():
-            for filelist in file_data.tree.iter_find_all({"tag": "kFilelistDeclaration"}):
-                for src_obj in filelist.iter_find_all({"tag": ["kPositionalArgument"]}):
-                    srcs.append(src_obj.text)
-        return srcs
+            for filelist in file_data.tree.iter_find_all({'tag': 'kFilelistDeclaration'}):
+                for identifier_obj in filelist.iter_find_all({'tag': tags}):
+                    identifier_id = identifier_obj.find({'tag': ['identifier']})
+                    identifiers.append(identifier_id.text)
+        return identifiers
 
-    def get_include_directories(self) -> List[str]:
-        incdirs = []
+    def get_positional_arguments(self) -> List[str]:
+        identifiers = []
         for file_path, file_data in self.data.items():
             for filelist in file_data.tree.iter_find_all({"tag": "kFilelistDeclaration"}):
-                for incdir_obj in filelist.iter_find_all({"tag": ["kIncludeArgument"]}):
-                    incdir_id = incdir_obj.find({"tag": ["identifier"]})
-                    incdirs.append(incdir_id.text)
-        return incdirs
+                for identifier_obj in filelist.iter_find_all({"tag": ["kPositionalArgument"]}):
+                    identifiers.append(identifier_obj.text)
+        return identifiers
 
     @property
     def print_tree(self):
@@ -40,20 +39,9 @@ def main():
     parser = FilelistParser(['filelist.f'])
 
     parser.print_tree
-    srcs = parser.get_source_files()
+    srcs = parser.get_positional_arguments()
     print(srcs)
-    incdirs = parser.get_include_directories()
+    incdirs = parser.get_optional_arguments(['kIncludeArgument'])
     print(incdirs)
-
-    # for file_path, file_data in data.items():
-    #     for filelist in file_data.tree.iter_find_all({"tag": "kFilelistDeclaration"}):
-    #         for positional in filelist.iter_find_all({"tag": ["kPositionalArgument"]}):
-    #             print(positional.text)
-    #             positional_id = positional.find({"tag": ["identifier"]})
-    #             print(positional_id.text)
-# 
-    #     for filelist in file_data.tree.iter_find_all({"tag": "kFilelistDeclaration"}):
-    #         for file in filelist.iter_find_all({"tag": ["kFileArgument"]}):
-    #             print(file.text)
-    #             file_id = file.find({"tag": ["identifier"]})
-    #             print(file_id.text)
+    filelists = parser.get_optional_arguments(['kFileArgument'])
+    print(filelists)

@@ -1,8 +1,17 @@
 # Veilog filelist parser
 
+## Usage
+
 ```ps
-pip freeze > requirements.txt
+make build
 ```
+
+## Install
+```ps
+make install
+```
+
+
 ## python -m <module> 環境における lanch.json
 * module と pythonPath を追加し、program を削除する。
 * module には __init__.py と __main__.py が格納されているモジュール名を記載する。

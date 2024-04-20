@@ -10,3 +10,4 @@ src-f
 -Isrc
 +incdir+src
 -I src/tb
+-y model
