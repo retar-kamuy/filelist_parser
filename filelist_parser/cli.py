@@ -1,10 +1,9 @@
 from typing import List
-
 import anytree
 
 from filelist_syntax import FilelistSyntax
 
-class FilelistParser(FilelistSyntax):
+class Cli(FilelistSyntax):
     def __init__(self, paths: List[str]):
         super().__init__()
         self.paths = paths
@@ -36,17 +35,3 @@ class FilelistParser(FilelistSyntax):
             for prefix, _, node in anytree.RenderTree(file_data.tree):
                 print(f"\033[90m{prefix}\033[0m{node.to_formatted_string()}")
             print()
-
-
-def main():
-    parser = FilelistParser(['filelist.f'])
-
-    tree = parser.print_tree
-    print(tree)
-
-    srcs = parser.get_positional_arguments()
-    print(srcs)
-    incdirs = parser.get_optional_arguments(['+incdir'])
-    print(incdirs)
-    filelists = parser.get_optional_arguments(['-f'])
-    print(filelists)

@@ -1,14 +1,13 @@
 """Wrapper for ``filelist-syntax --export_json``"""
+from typing import Callable, Dict, Iterable, List, Optional, Union
 import collections
 import re
-from typing import Callable, Dict, Iterable, List, Optional, Union
-
 import dataclasses
 import anytree
 
 import ply.yacc as yacc
-
 import yacc_filelist    # pylint: disable=W0611
+
 
 _CSI_SEQUENCE = re.compile("\033\\[.*?m")
 
@@ -79,7 +78,7 @@ class LevelOrderTreeIterator(_TreeIteratorBase):
 
 
 class Node(anytree.NodeMixin):
-    """Base VeribleVerilogSyntax syntax tree node.
+    """Base syntax tree node.
 
     Attributes:
         parent (Optional[Node]): Parent node.
@@ -219,14 +218,6 @@ class SyntaxData:
     tree: Optional[RootNode] = None
 
 class FilelistSyntax:
-    """``verible-verilog-syntax`` wrapper.
-
-    This class provides methods for running ``verible-verilog-syntax`` and
-    transforming its output into Python data structures.
-
-    Args:
-        executable: path to ``verible-verilog-syntax`` binary.
-    """
     @staticmethod
     def _transform_tree(tree, data: SyntaxData, skip_null: bool) -> RootNode:
         def transform(tree):

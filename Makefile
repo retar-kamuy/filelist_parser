@@ -33,7 +33,11 @@ requirements.txt:
 	$(PIP) freeze > $@
 
 build:
-	$(PYTHON) -m $(MODULE)
+	$(PY3) -m build --wheel
+
+run:
+	$(PYTHON) -m pip install -e .
+	$(PYTHON) run.py
 
 clean: .venv
 	$(RM) .venv
